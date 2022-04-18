@@ -10,13 +10,16 @@
               </div>
 
       <div class="wrapper">
-        <ul>
-          <li>
-            <span> Username</span>
+        <ul class="users">
+          <li 
+          v-for="(user, key) in users"
+          :key="key"
+          >
+            <span> {{ user.user }} </span>
             <div class="btns">
               <button class="edit">Canel</button>
               <button class="edit"> Edit</button>
-              <button class="delete">Delete</button>
+              <button class="delete" @click="deleteUser(key)">Delete</button>
             </div>
           </li>
         </ul>
@@ -33,6 +36,7 @@ export default {
   data () {
     return {
       content: '',
+      users: {},
       API : 'https://vue-uzb-login-default-rtdb.firebaseio.com/users.json'
     }
   },
@@ -58,7 +62,10 @@ export default {
           })
         })
         const data  = await res.json()
-        console.log(data);
+        this.users[data.name] = {
+          user: this.content
+        }
+        
       }
       catch (err) {
         console.log(err);
@@ -68,17 +75,37 @@ export default {
     },
 
     //  GET
-    
+
   async  getUsers () {
       try{
         const res = await fetch (this.API)
         const data = await res.json()
-        console.log(data)
+        this.users = data
+        console.log(this.users)
+        
       }
       catch(error) {
         console.log(error)
       }
+    },
+
+    // DELETE  user 
+    async deleteUser (key) {
+      try {
+        const res = await fetch('https://vue-uzb-login-default-rtdb.firebaseio.com/users/${key}.json', {
+          method: 'DELETE'
+         
+        }) 
+         const data = await res.json
+          console.log(data)
+      }
+      catch (error) {
+        console.log(error)
+      }
     }
+  },
+  mounted () {
+    this.getUsers() 
   }
 }
 </script>
