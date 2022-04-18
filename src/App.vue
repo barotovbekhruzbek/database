@@ -92,12 +92,9 @@ export default {
     // DELETE  user 
     async deleteUser (key) {
       try {
-        const res = await fetch('https://vue-uzb-login-default-rtdb.firebaseio.com/users/${key}.json', {
-          method: 'DELETE'
-         
-        }) 
-         const data = await res.json
-          console.log(data)
+        await fetch('https://vue-uzb-login-default-rtdb.firebaseio.com/users/${key}.json',{method: 'DELETE'})
+        delete this.users[key]
+    
       }
       catch (error) {
         console.log(error)
