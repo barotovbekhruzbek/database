@@ -1,26 +1,101 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="container">
+      <div class="card form-control">
+              <div class="form" @click.prevent>
+                <form action="">
+                  <input type="text" placeholder="User name" v-model.trim="content">
+                  <button class="send" @click="sendUser">Send</button>
+                  <button class="edit_1">Edit</button>
+                </form>
+              </div>
+
+      <div class="wrapper">
+        <ul>
+          <li>
+            <span> Username</span>
+            <div class="btns">
+              <button class="edit">Canel</button>
+              <button class="edit"> Edit</button>
+              <button class="delete">Delete</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  data () {
+    return {
+      content: '',
+      API : 'https://vue-uzb-login-default-rtdb.firebaseio.com/users.json'
+    }
+  },
+  methods: {
+  async  sendUser () {
+      if(this.content.length ===0 || this.content.length <= 3) {
+        return
+      }
+      
+
+
+      // Api  post
+
+      try {
+        const res = await fetch(this.API, {
+          method : 'POST',
+          headers: {
+            'Content-type': 'application/json'
+          },
+          body : JSON.stringify({
+            user: this.content
+            
+          })
+        })
+        const data  = await res.json()
+        console.log(data);
+      }
+      catch (err) {
+        console.log(err);
+      }
+
+      this.content = ""
+    },
+
+    //  GET
+    
+  async  getUsers () {
+      try{
+        const res = await fetch (this.API)
+        const data = await res.json()
+        console.log(data)
+      }
+      catch(error) {
+        console.log(error)
+      }
+    }
   }
 }
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+    .send{
+      margin-top: 20px;
+      width: 100%;
+      background-color: aqua;
+      border: 0;
+      padding: 10px;
+    }
+    .edit_1{
+      width: 100%;
+      margin-top: 20px;
+      background-color: coral;
+      border: 0;
+      padding: 10px;
+    }
 </style>
