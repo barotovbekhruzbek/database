@@ -4,8 +4,8 @@
               <div class="form" @click.prevent>
                 <form action="">
                   <input type="text" placeholder="User name" v-model.trim="content">
-                  <button class="send" @click="sendUser">Send</button>
-                  <button class="edit_1">Edit</button>
+                  <button class="send" @click="sendUser" v-if="!isEditing">Send</button>
+                  <button class="edit_1" v-if="isEditing">Edit</button>
                 </form>
               </div>
 
@@ -17,8 +17,8 @@
           >
             <span> {{ user.user }} </span>
             <div class="btns">
-              <button class="edit">Canel</button>
-              <button class="edit"> Edit</button>
+              <button class="edit" v-if="isEditing && key === activeKey" >Canel</button>
+              <button class="edit" @click="beforeEdit(key, user.user)"> Edit</button>
               <button class="delete" @click="deleteUser(key)">Delete</button>
             </div>
           </li>
@@ -36,6 +36,8 @@ export default {
   data () {
     return {
       content: '',
+      isEditing: true,
+      activeKey : null,
       users: {},
       API : 'https://vue-uzb-login-default-rtdb.firebaseio.com/users.json'
     }
@@ -92,13 +94,18 @@ export default {
     // DELETE  user 
     async deleteUser (key) {
       try {
-        await fetch('https://vue-uzb-login-default-rtdb.firebaseio.com/users/${key}.json',{method: 'DELETE'})
+        await fetch(`https://vue-uzb-login-default-rtdb.firebaseio.com/users/${key}.json`,{method: 'DELETE'})
         delete this.users[key]
     
       }
       catch (error) {
         console.log(error)
       }
+    },
+    beforeEdit(key,text) {
+      this.isEditing = false
+      this.content = text
+      this.activeKey = key  
     }
   },
   mounted () {
@@ -121,5 +128,21 @@ export default {
       background-color: coral;
       border: 0;
       padding: 10px;
+    }
+    .delete{
+      padding: 10px;
+      background-color: brown;
+      border: 0;
+      color: #fff;
+      border-radius: 6px;
+      margin-left: 10px;
+    }
+    .edit{
+      padding: 10px;
+      background-color: sandybrown;
+      border: 0;
+      color: #fff;
+      border-radius: 6px;
+      margin-left: 10px;
     }
 </style>
